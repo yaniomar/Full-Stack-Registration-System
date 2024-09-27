@@ -1,2 +1,2 @@
 "# salonWebsite" 
-This website is a dynamic registration website that is mainly used for salons. However, it can be used for other services since it is dynamic.
+We are working on a full stack and a dynamic website registration website mainly used for salons. However, it can be used for other services since it is dynamic.
