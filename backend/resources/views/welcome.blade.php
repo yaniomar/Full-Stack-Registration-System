@@ -6,6 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>hello</h1>
+    <?php
+        if(DB::connection()->getPdo()){
+            echo "connected";
+        }else echo "not connected";
+        ?>
 </body>
 </html>
