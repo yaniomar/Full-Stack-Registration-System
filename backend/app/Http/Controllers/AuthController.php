@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\User; // Import the User model
-use Illuminate\Support\Facades\Hash; // Import Hash for password hashing
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // Show the signup form
     public function showSignupForm()
     {
         return view('auth.signup'); // Ensure this view exists
     }
 
-    // Handle the signup process
     public function signup(Request $request)
     {
         // Validate the incoming request data
@@ -23,22 +21,20 @@ class AuthController extends Controller
             'second_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'birth_date' => 'required|date',
-            'phone' => 'required|max:15',
+            'phone' => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Create a new user
+        // Create the user
         User::create([
-            'first_name' => $request->input('first_name'),
-            'second_name' => $request->input('second_name'),
-            'email' => $request->input('email'),
-            'birth_date' => $request->input('birth_date'),
-            'phone' => $request->input('phone'),
-            'password' => Hash::make($request->input('password')), // Hash the password
-            'admin' => false, // Set admin to false by default
+            'first_name' => $request->first_name,
+            'second_name' => $request->second_name,
+            'email' => $request->email,
+            'birth_date' => $request->birth_date,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
         ]);
 
-        // Redirect to the signup page with a success message
-        return redirect()->route('signup.form')->with('success', 'User registered successfully!');
+        return redirect('/')->with('success', 'Signup successful!');
     }
 }
