@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
-class AuthController extends Controller
+class RegisteredUserController extends Controller
 {
-    public function showSignupForm()
+    public function store(Request $request)
     {
-        return view('auth.signup'); // Ensure this view exists
-    }
-
-    public function signup(Request $request)
-    {
-        // Validate the incoming request data
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'second_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -25,8 +22,11 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Create the user
-        User::create([
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $user = User::create([
             'first_name' => $request->first_name,
             'second_name' => $request->second_name,
             'email' => $request->email,
@@ -36,6 +36,7 @@ class AuthController extends Controller
         ]);
 
         event(new Registered($user));
-        return redirect('/')->with('success', 'Signup successful!');
+
+        return redirect()->route('welcome')->with('success', 'Signup successful! Please verify your email.');
     }
 }
