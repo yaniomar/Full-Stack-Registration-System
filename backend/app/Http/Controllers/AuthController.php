@@ -34,8 +34,6 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'password' => Hash::make($request->password),
         ]);
-
-        event(new Registered($user));
         return redirect('/')->with('success', 'Signup successful!');
     }
 }

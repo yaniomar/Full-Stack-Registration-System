@@ -2,25 +2,26 @@
 
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/signup', [AuthController::class, 'showSignupForm'])->name('signup.form');
 
 Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
-Route::post('/signup', [RegisteredUserController::class, 'store'])->name('signup');
+
 Route::get('/', function () {
-    return view('welcome'); // Adjust this if your welcome view is located elsewhere
-})->name('welcome');
-Route::get('/email/verify', function () {
-    return view('auth.verify-email'); // Create a view for this
-})->middleware('auth')->name('verification.notice');
+    return view('welcome');
+});
+Auth::routes([
+    'verify'=>true
+]);
 
-Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
-    ->middleware(['auth', 'signed'])
-    ->name('verification.verify');
+Auth::routes();
 
-Route::post('/email/resend', [VerificationController::class, 'resend'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.send');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/send-test-email', function () {
+    Mail::raw('This is a test email.', function ($message) {
+        $message->to('oabdelfattah943@gmail.com')
+                ->subject('Test Email');
+    });
+    return 'Email sent successfully';
+});
