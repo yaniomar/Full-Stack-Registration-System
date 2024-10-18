@@ -19,9 +19,9 @@ return new class extends Migration
             $table->date('birth_date');
             $table->string('phone');
             $table->string('password');
+            $table->timestamp('email_verified_at')->nullable(); // To store the email verification time
             $table->timestamps();
-            $table->boolean('admin')->default(false); 
-        });
+        });        
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
@@ -37,6 +37,9 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+        Schema::table('users', function (Blueprint $table) {
+            $table->timestamp('email_verified_at')->nullable();
+        });
     }
 
     /**
@@ -47,5 +50,8 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('email_verified_at');
+        });
     }
 };
